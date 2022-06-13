@@ -108,7 +108,7 @@ cd rackspace-k8s-webapi/k8s
 helm install k8s-webapi ./k8s-webapi
 ```
 
-Following Annotations are required for ISRA to work with each Pod:
+Following Annotations are required for IRSA to work with each Pod:
 
 ```
 kubectl annotate serviceaccount -n interview-namespace default eks.amazonaws.com/role-arn=arn:aws:iam::608157257865:role/eks_pod_iam_role
@@ -130,3 +130,12 @@ The deployed application is available at http://ab475014e738240ab8fd77f7e4f1acea
 
 
 
+
+## Facts & Followed Practices:
+
+- The EKS cluster endpoint is public, however, being allowed only on restricted IP.
+- The NodeGroup is spread across 3 AZs for high availability reasons behind Autoscaling Group.
+- Atleast 2 Nodes (in different AZ) will always be running to keep the traffic in more than 1 AZ behind a loadbalancer.
+- Nodes are in private subnet with no access to internet at all. Access to required AWS resources is being given via multiple vpc endpoints.
+- All application resources : deployment, pods, services etc are deployed in __interview-namespace__ namespace.
+- IRSA (IAM Roles for ServiceAccounts) is utilized for least privilege on Pods, so they have only minimum permissions for their usage. This is for both: application pods & cluster autoscaler pods.
