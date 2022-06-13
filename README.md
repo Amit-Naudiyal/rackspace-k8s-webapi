@@ -14,7 +14,7 @@
 
 ## Assumptions
 
-
+- There is a system where kubectl binary (version 1.21) is installed.
 
 
 ## Step by Step Process
@@ -23,96 +23,46 @@ The entire AWS Infrastructure will be created using Terraform
 
 ### 1. Backend Support Infra:
 
-First we need to create S3 bucket & DynamoDB table to store the Terraform state file. State for these 2 components will remain local.
+First we need to create S3 bucket & DynamoDB table to store the Terraform state file. This S3 bucket will be private & encrypted. State for these 2 components will remain local.
 
 - Pull this github repository - **rackspace-k8s-webapi**
 
-- Export the AWS Access /Secret keypair as environment variable
+- Export the AWS Access /Secret keypair as environment variable for the user (amit.naudiyal)
 
 		```
 		export AWS_ACCESS_KEY_ID=AKIAXXXXXXXXXXYF
 		export AWS_SECRET_ACCESS_KEY=p7gXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		```
 
-- Ideally you will use a registered domain to create certificate. 
-- However, in case if you do not have any registered domain, you need to create a Self-signed certificate and upload it to ACM
+- Install the Backend Infra:
+
+		```
+		cd rackspace-k8s-webapi/backend-support
+		terraform init
+		terraform plan
+		terraform apply
+		```
+
+
+### 2. Base Infra:
+
+Once S3 bucket & DDB tables are available, the rest of the AWS Infrastructure will be provisioned keeping the state file on S3 bucket and lock file on DDB table.
+
+- Install the Base Infra:
+
+		```
+		cd rackspace-k8s-webapi/base
+		terraform init
+		terraform plan
+		terraform apply
+		```
+
+- Above will install:
 	
-	- Certificate Generation
-		```
-		$ git clone https://github.com/OpenVPN/easy-rsa.git
-		$ cd easy-rsa/easyrsa3
-		```
-
-		- initialize a new PKI environment:
-
-			$ ./easyrsa init-pki
-
-		- build a new certification authority (CA):
-
-			$ ./easyrsa build-ca nopass 
-
-		- generate the server-side certificate and key:
-
-			$ ./easyrsa build-server-full server nopass
-
-				Using SSL: openssl LibreSSL 2.8.3
-				Generating a 2048 bit RSA private key
-				................+++
-				...................................+++
-				writing new private key to '/Users/anaudiya/personal/Others/Interview/PolarSeven/Assignment_15 Aug/workspace/easy-rsa/easyrsa3/pki/easy-rsa-93648.2tFsRn/tmp.iVL691'
-				-----
-				Using configuration from /Users/anaudiya/personal/Others/Interview/PolarSeven/Assignment_15 Aug/workspace/easy-rsa/easyrsa3/pki/easy-rsa-93648.2tFsRn/tmp.nuzabr
-				Check that the request matches the signature
-				Signature ok
-				The Subject's Distinguished Name is as follows
-				commonName            :ASN.1 12:'server'
-				Certificate is to be certified until Nov 18 16:27:24 2022 GMT (825 days)
-
-				Write out database with 1 new entries
-				Data Base Updated
-
-		- generate the client-side certificate and key: _(WILL BE PERFORMED FOR EACH USER: a_naudiyal, r_kumar & p_patel)_
-			
-			```
-			$ ./easyrsa build-client-full a_naudiyal.adu.directory.com nopass			
-			$ ./easyrsa build-client-full r_kumar.adu.directory.com nopass
-			$ ./easyrsa build-client-full p_patel.adu.directory.com nopass
-			```
-
-				.....
-				The Subject's Distinguished Name is as follows
-				commonName            :ASN.1 12:'a_naudiyal.adu.directory.com'
-				commonName            :ASN.1 12:'r_kumar.adu.directory.com'
-				commonName            :ASN.1 12:'p_patel.adu.directory.com'
-				Certificate is to be certified until Nov 18 16:30:09 2022 GMT (825 days)
-				.....
-
-	- Copy the server certificate and key & client certificate(s) and Key to a custom folder, for easy usage for next command.
-
-			$ mkdir custom_folder/
-			$ cp pki/ca.crt custom_folder/
-			$ cp pki/issued/server.crt custom_folder/
-			$ cp pki/private/server.key custom_folder/
-			
-			$ cp pki/issued/p_patel.adu.directory.com.crt custom_folder/
-			$ cp pki/issued/r_kumar.adu.directory.com.crt custom_folder/
-			$ cp pki/issued/a_naudiyal.adu.directory.com.crt custom_folder/
-
-			$ cp pki/private/a_naudiyal.adu.directory.com.key custom_folder/
-			$ cp pki/private/r_kumar.adu.directory.com.key custom_folder/
-			$ cp pki/private/p_patel.adu.directory.com.key custom_folder/
-
-			$ cd custom_folder/			
-
-	- Upload the server certificate & key and the client certificate & key to ACM.
-
-		```
-		$ aws acm import-certificate --certificate fileb://server.crt --private-key fileb://server.key --certificate-chain fileb://ca.crt --region us-east-1
-
-		$ aws acm import-certificate --certificate fileb://a_naudiyal.adu.directory.com.crt --private-key fileb://a_naudiyal.adu.directory.com.key --certificate-chain fileb://ca.crt --region us-east-1
-		$ aws acm import-certificate --certificate fileb://r_kumar.adu.directory.com.crt --private-key fileb://r_kumar.adu.directory.com.key --certificate-chain fileb://ca.crt --region us-east-1
-		$ aws acm import-certificate --certificate fileb://p_patel.adu.directory.com.crt --private-key fileb://p_patel.adu.directory.com.key --certificate-chain fileb://ca.crt --region us-east-1		
-		```
+	a. A new VPC and few private /public subnets, VPC endpoints.
+	b. EKS cluster with 1 dedicated NodeGroup.
+	b. ECR repo
+	c. SSM Parameter
 
 
 ### 2. Create AWS managed Microsoft Active Directory:
