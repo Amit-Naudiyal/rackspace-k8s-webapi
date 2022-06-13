@@ -29,19 +29,19 @@ First we need to create S3 bucket & DynamoDB table to store the Terraform state 
 
 - Export the AWS Access /Secret keypair as environment variable for the user (amit.naudiyal)
 
-		```
-		export AWS_ACCESS_KEY_ID=AKIAXXXXXXXXXXYF
-		export AWS_SECRET_ACCESS_KEY=p7gXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-		```
+```
+export AWS_ACCESS_KEY_ID=AKIAXXXXXXXXXXYF
+export AWS_SECRET_ACCESS_KEY=p7gXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
 
 - Install the Backend Infra:
 
-		```
-		cd rackspace-k8s-webapi/backend-support
-		terraform init
-		terraform plan
-		terraform apply
-		```
+```
+cd rackspace-k8s-webapi/backend-support
+terraform init
+terraform plan
+terraform apply
+```
 
 
 ### 2. Base Infra:
@@ -50,12 +50,12 @@ Once S3 bucket & DDB tables are available, the rest of the AWS Infrastructure wi
 
 - Install the Base Infra:
 
-		```
-		cd rackspace-k8s-webapi/base
-		terraform init
-		terraform plan
-		terraform apply
-		```
+```
+cd rackspace-k8s-webapi/base
+terraform init
+terraform plan
+terraform apply
+```
 
 - Above will install:
 	
