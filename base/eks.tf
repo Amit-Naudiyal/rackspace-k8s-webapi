@@ -45,13 +45,13 @@ module "eks" {
   version = "18.23.0"
 
   cluster_name    = "${local.cluster_name}"
-  cluster_version = "1.21"
+  cluster_version = "${local.cluster_version}"
 
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
 
   #Restrict Public endpoint access to your public IP
-  cluster_endpoint_public_access_cidrs = [ "159.196.168.153/32" ]
+  cluster_endpoint_public_access_cidrs = "${local.cluster_endpoint_access_ips}"
 
   cluster_addons = {
     coredns = {
@@ -71,7 +71,7 @@ module "eks" {
 
   aws_auth_roles = [
     {
-      rolearn  = "arn:aws:iam::608157257865:role/microservice-k8s-identity-ec2"
+      rolearn  = aws_iam_role.k8s-identity-role.arn
       username = "microservice-k8s-identity-ec2"
       groups   = ["system:masters"]
     },
@@ -98,9 +98,6 @@ module "eks" {
     }
 
   }
-
-  #write_kubeconfig   = true
-  #config_output_path = "./"
   
   tags = {
      createdBy = "microservice/base"
@@ -161,7 +158,7 @@ module "irsa_role" {
   oidc_providers = {
     ex = {
       provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["interview-namespace:default"]
+      namespace_service_accounts = ["${local.app_namespace}:default"]
     }
   }
 

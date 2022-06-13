@@ -1,5 +1,8 @@
 locals {
   cluster_name = "interview-test-cluster"
+  cluster_version = "1.21"
+  cluster_endpoint_access_ips = [ "159.196.168.153/32" ]
+  
   key_name = "microservice-key"
 
   tags = {

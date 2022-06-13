@@ -22,11 +22,11 @@ spec:
         - containerPort: 8080
         env:
         - name: AWS_STS_REGIONAL_ENDPOINTS
-          value: regional 
+          value: regional
         livenessProbe:
           httpGet:
             path: /
-            port: 8080 
+            port: 8080
         readinessProbe:
           tcpSocket:
             port: 8080
