@@ -25,9 +25,9 @@ The entire AWS Infrastructure will be created using Terraform
 
 First we need to create S3 bucket & DynamoDB table to store the Terraform state file. State for these 2 components will remain local.
 
-	- Pull this github repository - **rackspace-k8s-webapi**
+- Pull this github repository - **rackspace-k8s-webapi**
 
-	- Export the AWS Access /Secret keypair as environment variable
+- Export the AWS Access /Secret keypair as environment variable
 
 		```
 		export AWS_ACCESS_KEY_ID=AKIAXXXXXXXXXXYF
