@@ -118,9 +118,9 @@ kubectl annotate serviceaccount -n kube-system cluster-autoscaler eks.amazonaws.
 
 - Above will create:
 
-a. Namespace: interview-namespace	
-a. 3 replicas of the python application under Deployment controller<br>
-b. Loadbalancer type service. <br>
-c. Cluster autoscaler
+a. Namespace: interview-namespace. <br>
+b. 3 replicas of the python application under Deployment controller. <br>
+c. Loadbalancer type service. <br>
+d. Cluster autoscaler.
 
 
