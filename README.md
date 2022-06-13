@@ -59,10 +59,10 @@ terraform apply
 
 - Above will install:
 	
-a. A new VPC and few private /public subnets, VPC endpoints.
-b. EKS cluster with 1 dedicated NodeGroup.
-c. ECR repo
-d. SSM Parameter
+a. A new VPC and few private /public subnets, VPC endpoints. <br>
+b. EKS cluster with 1 dedicated NodeGroup. <br>
+c. ECR repo. <br>
+d. SSM Parameter.
 
 
 ### 2. Create AWS managed Microsoft Active Directory:
