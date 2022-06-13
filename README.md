@@ -14,8 +14,14 @@
 
 ## Assumptions
 
-- There is a linux /mac system where all below commands will be executed.
+- There is a local linux /mac system where all below commands will be executed.
 - kubectl binary (version 1.21) is installed on the system.
+- Helm binary (version >=v3.9.0) is installed on the system.
+
+
+## Declarations
+
+- For this assignment, us-east-1 region is used for AWS resources.
 
 
 ## Step by Step Process
@@ -51,7 +57,7 @@ Once S3 bucket & DDB tables are available, the rest of the AWS Infrastructure wi
 
 - Make following changes:
 
-a. Local variable _cluster_endpoint_access_ips_ to be set as Public IP of the above system.
+a. Local variable _cluster_endpoint_access_ips_ to be set as Public IP of the above local system.
 
 - Install the Base Infra:
 
@@ -70,6 +76,15 @@ c. ECR repo. <br>
 d. SSM Parameter.
 
 
+- Check EKS connectivity with the local system:
+
+```
+aws eks update-kubeconfig --region us-east-1 --name interview-test-cluster
+kubectl get pods -A
+
+```
+
+
 ### 3. Build Application
 
 Here we build the docker image of the Pyhton flask application and push it to ECR repo created earlier:
@@ -82,10 +97,23 @@ aws ecr get-login-password --region us-east-1 | docker login --username AWS --pa
 docker push 608157257865.dkr.ecr.us-east-1.amazonaws.com/testapp:latest
 
 ```
+	
+
+### 4. Deploy Application:
+
+The python application will be deployed via Helm chart:
+
+```
+cd rackspace-k8s-webapi/k8s
+helm install k8s-webapi ./k8s-webapi
+```
+
+```
+kubectl annotate serviceaccount -n interview-namespace default eks.amazonaws.com/role-arn=arn:aws:iam::608157257865:role/eks_pod_iam_role
 
 
-
-### 3. Create Client VPN Endpoint:
+kubectl annotate serviceaccount -n kube-system cluster-autoscaler eks.amazonaws.com/role-arn=arn:aws:iam::608157257865:role/cluster-autoscaler
+```
 
 
 ### 4. Installed AWS VPN Client: https://aws.amazon.com/vpn/client-vpn-download/
