@@ -108,36 +108,19 @@ cd rackspace-k8s-webapi/k8s
 helm install k8s-webapi ./k8s-webapi
 ```
 
+Following Annotations are required for ISRA to work with each Pod:
+
 ```
 kubectl annotate serviceaccount -n interview-namespace default eks.amazonaws.com/role-arn=arn:aws:iam::608157257865:role/eks_pod_iam_role
-
 
 kubectl annotate serviceaccount -n kube-system cluster-autoscaler eks.amazonaws.com/role-arn=arn:aws:iam::608157257865:role/cluster-autoscaler
 ```
 
+- Above will create:
 
-### 4. Installed AWS VPN Client: https://aws.amazon.com/vpn/client-vpn-download/
+a. Namespace: interview-namespace	
+a. 3 replicas of the python application under Deployment controller<br>
+b. Loadbalancer type service. <br>
+c. Cluster autoscaler
 
-- Created a Profile:
-
-	Name: vpn-endpoint-amitInfraVPC-public  
-	VPN file: downloaded-client-config.ovpn
-
-- Connect:
-
-	Username: a_naudiyal  
-	password: ********
-
-**CONNECTED**
-
-- Client IP address allocated to my mac: 
-
-	utun2: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1500  
-	inet 172.16.0.162 --> 172.16.0.162 netmask 0xffffffe0 
-
-- Able to connect the Instance(s) in Target Subnet on their private IP:
-
-	```
-	ssh -i <path/to/privateKey> ec2-user@10.0.12.69
-	```
 
