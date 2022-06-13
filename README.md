@@ -124,3 +124,9 @@ c. Loadbalancer type service. <br>
 d. Cluster autoscaler.
 
 
+### 5. Resultant URL:
+
+The deployed application is available at http://ab475014e738240ab8fd77f7e4f1acea-1857788233.us-east-1.elb.amazonaws.com/
+
+
+
