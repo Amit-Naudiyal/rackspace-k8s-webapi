@@ -139,4 +139,4 @@ The deployed application is available at http://ab475014e738240ab8fd77f7e4f1acea
 - Nodes are in private subnet with no access to internet at all. Access to required AWS resources is being given via multiple vpc endpoints.
 - All application resources : deployment, pods, services etc are deployed in __interview-namespace__ namespace.
 - IRSA (IAM Roles for ServiceAccounts) is utilized for least privilege on Pods, so they have only minimum permissions for their usage. This is for both: application pods & cluster autoscaler pods.
-- The SSH keypair to login to the Node instances can be found in _loginpvtkey.pem_ file generated under rackspace-k8s-webapi/base.
+- The SSH keypair to login to the Node instances can be found in _loginpvtkey.pem_ file generated under rackspace-k8s-webapi/base. _(not committed)_
