@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: interview-deployment
+  namespace: interview-namespace
+  labels:
+    app: py-flask
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: py-flask
+  template:
+    metadata:
+      labels:
+        app: py-flask
+    spec:
+      containers:
+      - name: py-flask
+        image: {{ .Values.image.repository }}
+        ports:
+        - containerPort: 8080
+        env:
+        - name: AWS_STS_REGIONAL_ENDPOINTS
+          value: regional 
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080 
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10                   
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"        
